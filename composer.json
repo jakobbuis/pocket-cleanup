@@ -1,0 +1,15 @@
+{
+    "name": "jakobbuis/pocket-cleanup",
+    "description": "Helps cleanup your old Pocket items",
+    "type": "project",
+    "require": {
+        "guzzlehttp/guzzle": "^7.9"
+    },
+    "license": "AGPL-3.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "Jakobbuis\\PocketCleanup\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
