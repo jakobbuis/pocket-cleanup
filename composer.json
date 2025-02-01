@@ -3,13 +3,9 @@
     "description": "Helps cleanup your old Pocket items",
     "type": "project",
     "require": {
-        "guzzlehttp/guzzle": "^7.9"
+        "guzzlehttp/guzzle": "^7.9",
+        "vlucas/phpdotenv": "^5.6"
     },
-    "license": "AGPL-3.0-or-later",
-    "autoload": {
-        "psr-4": {
-            "Jakobbuis\\PocketCleanup\\": "src/"
-        }
-    },
+    "license": "MIT",
     "minimum-stability": "stable"
 }
