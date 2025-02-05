@@ -83,6 +83,7 @@ $get = function ($offset) use ($client, $consumerKey, $accessToken, $itemsPerReq
                 'sort' => 'oldest',
                 'count' => $itemsPerRequest,
                 'offset' => $offset,
+                'total' => 'true',
             ],
         ])->getBody()->getContents());
     } catch (ServerException|ClientException $e) {
@@ -97,8 +98,10 @@ $get = function ($offset) use ($client, $consumerKey, $accessToken, $itemsPerReq
 $offset = 0;
 $max = 100;
 $items = [];
+$total = null;
 do {
     $data = $get($offset);
+    $total = (int) $data->total;
     $list = (array) $data->list;
     $items = array_merge($items, $list);
     $offset += count($list);
@@ -115,6 +118,8 @@ if (count($items) > $max) {
     $items = array_slice($items, 0, $max);
     echo "Trimmed to $max items\n";
 }
+
+echo "Total items in Pocket: $total" . PHP_EOL . PHP_EOL;
 
 foreach ($items as $id => $item) {
     echo "$id: \e]8;;$item->resolved_url\e\\$item->resolved_title\e]8;;\e\\" . PHP_EOL;
