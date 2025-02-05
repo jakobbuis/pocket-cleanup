@@ -53,6 +53,10 @@ try {
         ],
     ]);
 } catch (ServerException|ClientException $e) {
+    if ($e->getResponse()->getStatusCode() === 403) {
+        echo "Authorization failed\n";
+        unlink(__DIR__ . '/.access_token');
+    }
     echo "Error: " . $e->getMessage() . "\n";
     $response = $e->getResponse();
     echo $response->getStatusCode() . "\n";
