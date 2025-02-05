@@ -117,7 +117,8 @@ if (count($items) > $max) {
 }
 
 foreach ($items as $id => $item) {
-    echo "$id: $item->resolved_title\n";
+    echo "$id: \e]8;;$item->resolved_url\e\\$item->resolved_title\e]8;;\e\\" . PHP_EOL;
+
 }
 
 echo "Archive these items? [y/N] ";
