@@ -4,6 +4,12 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 
+$max = $argv[1] ?? 100;
+if (!is_numeric($max)) {
+    echo "Usage: php cleanup.php [number of items]\n";
+    exit(1);
+}
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -61,7 +67,7 @@ try {
     $response = $e->getResponse();
     echo $response->getStatusCode() . "\n";
     echo $response->getBody()->getContents() . "\n";
-    exit(1);
+    exit(2);
 }
 $data = json_decode($response->getBody()->getContents());
 $accessToken = $data->access_token;
@@ -95,12 +101,11 @@ $get = function ($offset) use ($client, $consumerKey, $accessToken, $itemsPerReq
         $response = $e->getResponse();
         echo $response->getStatusCode() . "\n";
         echo $response->getBody()->getContents() . "\n";
-        exit(2);
+        exit(3);
     }
 };
 
 $offset = 0;
-$max = 100;
 $items = [];
 $total = null;
 do {
@@ -162,5 +167,5 @@ try {
     $response = $e->getResponse();
     echo $response->getStatusCode() . "\n";
     echo $response->getBody()->getContents() . "\n";
-    exit(3);
+    exit(4);
 }
