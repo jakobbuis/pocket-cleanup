@@ -3,6 +3,7 @@
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Psr7\Response;
 
 $max = $argv[1] ?? 100;
 if (!is_numeric($max)) {
@@ -97,8 +98,23 @@ $get = function ($offset) use ($client, $consumerKey, $accessToken, $itemsPerReq
             ],
         ])->getBody()->getContents());
     } catch (ServerException|ClientException $e) {
-        echo "Error: " . $e->getMessage() . "\n";
         $response = $e->getResponse();
+        $body = json_decode($response->getBody()->getContents());
+
+        if ($response->getStatusCode() === 403 && $body->error === 'Not authorized') {
+            echo "Not authorized" . PHP_EOL;
+            echo "Possibly rate-limited" . PHP_EOL;
+
+            echo printHeader($response, 'X-Limit-User-Limit');
+            echo printHeader($response, 'X-Limit-User-Remaining');
+            echo printHeader($response, 'X-Limit-User-Reset');
+            echo printHeader($response, 'X-Limit-Key-Limit');
+            echo printHeader($response, 'X-Limit-Key-Remaining');
+            echo printHeader($response, 'X-Limit-Key-Reset');
+            exit(5);
+        }
+
+        echo "Error: " . $e->getMessage() . "\n";
         echo $response->getStatusCode() . "\n";
         echo $response->getBody()->getContents() . "\n";
         exit(3);
@@ -168,4 +184,14 @@ try {
     echo $response->getStatusCode() . "\n";
     echo $response->getBody()->getContents() . "\n";
     exit(4);
+}
+
+function printHeader(Response $response, string $header)
+{
+    $values = $response->getHeader($header);
+    if (empty($values)) {
+        return "$header: <not present>" . PHP_EOL;
+    }
+
+    return "$header: " . implode(', ', $values) . PHP_EOL;
 }
